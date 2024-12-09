@@ -99,9 +99,13 @@ def main(args):
 
 
     tree = ElementTree(gpx)
-    tree.write(args.output,
-               encoding='utf-8',
-               xml_declaration=True)
+    try:
+        tree.write(args.output,
+                   encoding='utf-8',
+                   xml_declaration=True)
+    except PermissionError:
+        logger.error('Failed to write to "{}" - permission denied!'.format(args.output))
+        exit(1)
 
     logger.info('Wrote gpx file to "{}".'.format(args.output))
 
