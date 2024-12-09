@@ -5,7 +5,7 @@ import datetime
 import logging
 import logging.handlers
 import openpyxl
-from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
+from xml.etree.ElementTree import Element, SubElement, ElementTree
 
 __version__ = '0.1 (EB)'
 
@@ -30,6 +30,7 @@ consoleHandler.setFormatter(formatter)
 
 logger.addHandler(consoleHandler)
 
+
 def main(args):
     logger.debug('main()')
     logger.debug('  input file:  {}'.format(args.input))
@@ -39,7 +40,8 @@ def main(args):
     try:
         input_excel = openpyxl.load_workbook(args.input)
     except FileNotFoundError:
-        logger.error('Failed to open "{}" for reading - aborting!'.format(args.input))
+        logger.error('Failed to open "{}" for reading - '
+                     'aborting!'.format(args.input))
         exit(1)
 
     # Try to get the (only) sheet from the excel:
@@ -97,14 +99,14 @@ def main(args):
             name = SubElement(wpt, 'name')
             name.text = str(wp['name'])
 
-
     tree = ElementTree(gpx)
     try:
         tree.write(args.output,
                    encoding='utf-8',
                    xml_declaration=True)
     except PermissionError:
-        logger.error('Failed to write to "{}" - permission denied!'.format(args.output))
+        logger.error('Failed to write to "{}" - '
+                     'permission denied!'.format(args.output))
         exit(1)
 
     logger.info('Wrote gpx file to "{}".'.format(args.output))
@@ -144,6 +146,6 @@ if __name__ == '__main__':
     if args.quiet:
         consoleHandler.setLevel(logging.ERROR)
     if not args.output:
-        args.output=args.input.replace('.xlsx', '.gpx')
+        args.output = args.input.replace('.xlsx', '.gpx')
 
     main(args)
