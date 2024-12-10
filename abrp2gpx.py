@@ -17,19 +17,6 @@ abrp['sheetName'] = 'ABRP Activity'
 # we will store the waypoints from the input file here:
 abrp['waypoints'] = []
 
-# prepare console logger:
-logger = logging.getLogger(__name__)
-logger.setLevel(level=logging.DEBUG)
-
-formatter = logging.Formatter('%(asctime)-25s%(levelname)-10s%(message)s')
-
-consoleHandler = logging.StreamHandler()
-# default verbosity: INFO
-# command line option '-d' and '-q' will change this
-consoleHandler.setLevel(logging.INFO)
-consoleHandler.setFormatter(formatter)
-
-logger.addHandler(consoleHandler)
 
 
 def main(args):
@@ -123,6 +110,20 @@ def main(args):
 
 
 if __name__ == '__main__':
+    # prepare console logger:
+    logger = logging.getLogger(__name__)
+    logger.setLevel(level=logging.DEBUG)
+
+    formatter = logging.Formatter('%(asctime)-25s%(levelname)-10s%(message)s')
+
+    consoleHandler = logging.StreamHandler()
+    # default verbosity: INFO
+    # command line option '-d' and '-q' will change this
+    consoleHandler.setLevel(logging.INFO)
+    consoleHandler.setFormatter(formatter)
+
+    logger.addHandler(consoleHandler)
+
     parser = argparse.ArgumentParser(description='ABRP2GPX')
     parser.add_argument(
         '-v', '--version',
