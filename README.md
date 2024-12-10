@@ -12,7 +12,7 @@ This little tool converts the ABRP-xlsx-file to a gpx track file.
 - python 3
 
 The script is tested with python 3.6 in an Linux environment. However, it should run in
-Wind***ws envirenmtents also, but this is not tested.
+Wind***ws environments also, but this is not tested.
 
 ## Installation
 Download and install the script. If needed, make it an executable using the command "chmod +x abrp2gpx.py".
