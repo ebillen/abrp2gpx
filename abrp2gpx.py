@@ -18,7 +18,6 @@ abrp['sheetName'] = 'ABRP Activity'
 abrp['waypoints'] = []
 
 
-
 def main(args):
     '''
     main()
@@ -103,7 +102,8 @@ def main(args):
         if wp.get('timestamp'):
             time = SubElement(wpt, 'time')
             # TODO: do we need timezone conversion here?
-            time.text = datetime.datetime.fromtimestamp(wp['timestamp']).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+            time.text = datetime.datetime.fromtimestamp(
+                wp['timestamp']).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
     tree = ElementTree(gpx)
     try:
