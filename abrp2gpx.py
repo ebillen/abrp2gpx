@@ -5,6 +5,7 @@ import datetime
 import logging
 import logging.handlers
 import openpyxl
+from time import mktime, strptime
 from xml.etree.ElementTree import Element, SubElement, ElementTree
 
 __version__ = '0.1 (EB)'
@@ -64,7 +65,13 @@ def main(args):
 
     numWaypoints = 0
     for row in sheet.iter_rows(min_row=9):
-        timestamp = row[0].value
+        timestampstring = row[0].value
+        # timestampstring is in format "1.11.2024, 14:28:39"
+        # TODO: the time format probably depends on user's language settings
+        # in ABRP...
+        timestamp = mktime(strptime(timestampstring, '%d.%m.%Y, %H:%M:%S'))
+        logger.debug('  timestamp is {}'.format(timestampstring))
+        logger.debug('    => {}'.format(timestamp))
         lat = row[1].value
         lon = row[2].value
         height = row[4].value
@@ -98,6 +105,9 @@ def main(args):
         if wp.get('name'):
             name = SubElement(wpt, 'name')
             name.text = str(wp['name'])
+        if wp.get('timestamp'):
+            time = SubElement(wpt, 'time')
+            time.text = datetime.datetime.fromtimestamp(wp['timestamp']).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
     tree = ElementTree(gpx)
     try:
