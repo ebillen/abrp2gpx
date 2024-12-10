@@ -8,7 +8,7 @@ import openpyxl
 from time import mktime, strptime
 from xml.etree.ElementTree import Element, SubElement, ElementTree
 
-__version__ = '0.1 (EB)'
+__version__ = '0.9 (EB)'
 
 # structure to hold the data from the input file:
 abrp = {}
@@ -20,6 +20,14 @@ abrp['waypoints'] = []
 
 
 def main(args):
+    '''
+    main()
+
+    read the excel input file given in args.input, read the
+    track data and some meta data from it and create and
+    write a gpx track to args.output.
+    '''
+
     logger.debug('main()')
     logger.debug('  input file:  {}'.format(args.input))
     logger.debug('  output file: {}'.format(args.output))
@@ -94,6 +102,7 @@ def main(args):
             name.text = str(wp['name'])
         if wp.get('timestamp'):
             time = SubElement(wpt, 'time')
+            # TODO: do we need timezone conversion here?
             time.text = datetime.datetime.fromtimestamp(wp['timestamp']).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
     tree = ElementTree(gpx)
@@ -124,7 +133,33 @@ if __name__ == '__main__':
 
     logger.addHandler(consoleHandler)
 
-    parser = argparse.ArgumentParser(description='ABRP2GPX')
+    # prepare argument parser:
+    abrp2gpx_desc = """
+abrp2gpx.py version {}
+
+abrp2gpx is a converter from ABRP track files to gpx format.
+
+ABRP (https://abetterrouteplanner.com/) is able to track and
+save the driven route.
+The saved data can be exported in xlsx-format (MS Excel).
+However, it might be useful to get it in gpx format.
+
+This little tool converts the ABRP-xlsx-file to a gpx track file.
+
+Note: saving driven routes needs to be switched on in the
+car settings in ABRP.
+
+abrp2gpx.py is distributed in the hope that it will be useful,
+but without any warranty.
+
+Written by Elmar Billen.
+
+Feedback welcome (https://github.com/ebillen/abrp2gpx)
+""".format(__version__)
+
+    parser = argparse.ArgumentParser(
+                        description=abrp2gpx_desc,
+                        formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument(
         '-v', '--version',
         action='version',
@@ -153,10 +188,16 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.debug:
+        # set console output verbosity to DEBUG:
         consoleHandler.setLevel(logging.DEBUG)
     if args.quiet:
+        # set console output verbosity to ERROR:
         consoleHandler.setLevel(logging.ERROR)
+        # If no output file is given, use the name
+        # of the input file and replace
+        # ".xlsx" with ".gpx":
     if not args.output:
         args.output = args.input.replace('.xlsx', '.gpx')
 
+    # call main():
     main(args)
