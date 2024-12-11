@@ -193,9 +193,9 @@ Feedback welcome (https://github.com/ebillen/abrp2gpx)
     if args.quiet:
         # set console output verbosity to ERROR:
         consoleHandler.setLevel(logging.ERROR)
-        # If no output file is given, use the name
-        # of the input file and replace
-        # ".xlsx" with ".gpx":
+    # If no output file is given, use the name
+    # of the input file and replace
+    # ".xlsx" with ".gpx":
     if not args.output:
         args.output = args.input.replace('.xlsx', '.gpx')
 
