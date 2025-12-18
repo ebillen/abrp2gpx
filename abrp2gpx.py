@@ -60,10 +60,15 @@ def main(args):
     numWaypoints = 0
     for row in sheet.iter_rows(min_row=9):
         timestampstring = row[0].value
-        # timestampstring is in format "1.11.2024, 14:28:39"
-        # TODO: the time format probably depends on user's language settings
+        # The time format probably depends on user's language settings
         # in ABRP...
-        timestamp = mktime(strptime(timestampstring, '%d.%m.%Y, %H:%M:%S'))
+        # Let's try some common formats until we ca parse the string:
+        try:
+            timestamp = mktime(strptime(timestampstring, '%d.%m.%Y, %H:%M:%S'))
+        except ValueError:
+            logger.debug('  timestamp format {} failed, trying next...'.format('%d.%m.%Y, %H:%M:%S'))
+            timestamp = mktime(strptime(timestampstring, '%m/%d/%Y, %H:%M:%S %p'))
+            # probably other timestampstring formats should be added here...
         logger.debug('  timestamp is {}'.format(timestampstring))
         logger.debug('    => {}'.format(timestamp))
         lat = row[1].value
